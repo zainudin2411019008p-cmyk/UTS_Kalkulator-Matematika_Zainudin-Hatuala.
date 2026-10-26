@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator & Pengolah Matematika</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            /* Latar belakang putih bersih */
+            background-color: #ffffff;
+            color: #1f2937;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 540px;
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            padding: 32px;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #eff6ff;
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #f3f4f6;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #111827;
+            background-color: #f9fafb;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        select:focus, input:focus {
+            background-color: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        button {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit {
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-submit:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-reset {
+            background-color: #ffffff;
+            color: #4b5563;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-reset:hover {
+            background-color: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .result-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .result-header {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .result-detail {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px dashed #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <span class="tag">Pusat Hitung</span>
+            <h1 class="title">Modul Perhitungan Matematika</h1>
+            <p class="subtitle">Silakan tentukan jenis kalkulasi serta masukkan nilai variabel pertama dan kedua.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <form id="calcForm" onsubmit="event.preventDefault(); hitung();">
+            <div class="form-group">
+                <label for="operasi">Pilihan Modul Perhitungan</label>
+                <select id="operasi" onchange="updateLabel()">
+                    <option value="tambah">Penjumlahan (+)</option>
+                    <option value="kurang">Pengurangan (-)</option>
+                    <option value="kali">Perkalian (×)</option>
+                    <option value="bagi">Pembagian (÷)</option>
+                    <option value="pangkat">Perpangkatan (A^B)</option>
+                    <option value="persen">Persentase (A% dari B)</option>
+                </select>
+            </div>
+
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label id="label1" for="nilai1">Nilai Pertama (A)</label>
+                    <input type="number" id="nilai1" placeholder="0" step="any" required>
+                </div>
+                <div class="form-group">
+                    <label id="label2" for="nilai2">Nilai Kedua (B)</label>
+                    <input type="number" id="nilai2" placeholder="0" step="any" required>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="submit" class="btn-submit">Hitung Sekarang</button>
+                <button type="button" class="btn-reset" onclick="resetForm()">Reset</button>
+            </div>
+        </form>
+
+        <div class="result-card">
+            <div class="result-header">Hasil Kalkulasi</div>
+            <div class="result-value" id="hasilTeks">Silakan masukkan angka untuk memulai</div>
+            <div class="result-detail" id="langkahTeks">Langkah-langkah perhitungan akan ditampilkan di bagian ini.</div>
+        </div>
+    </div>
+
+    <script>
+        function updateLabel() {
+            const op = document.getElementById('operasi').value;
+            const label1 = document.getElementById('label1');
+            const label2 = document.getElementById('label2');
+
+            if (op === 'pangkat') {
+                label1.innerText = "Angka Basis (A)";
+                label2.innerText = "Eksponen / Pangkat (B)";
+            } else if (op === 'persen') {
+                label1.innerText = "Nilai Persen (A%)";
+                label2.innerText = "Dari Total (B)";
+            } else {
+                label1.innerText = "Nilai Pertama (A)";
+                label2.innerText = "Nilai Kedua (B)";
+            }
+        }
+
+        function hitung() {
+            const val1 = parseFloat(document.getElementById('nilai1').value);
+            const val2 = parseFloat(document.getElementById('nilai2').value);
+            const operasi = document.getElementById('operasi').value;
+            
+            const hasilTeks = document.getElementById('hasilTeks');
+            const langkahTeks = document.getElementById('langkahTeks');
+
+            if (isNaN(val1) || isNaN(val2)) {
+                hasilTeks.innerText = "Input Tidak Valid";
+                langkahTeks.innerText = "Harap masukkan nilai numerik pada kedua kolom yang tersedia.";
+                return;
+            }
+
+            let hasil = 0;
+            let langkah = "";
+
+            switch (operasi) {
+                case 'tambah':
+                    hasil = val1 + val2;
+                    langkah = `${val1} + ${val2} = ${hasil}`;
+                    break;
+                case 'kurang':
+                    hasil = val1 - val2;
+                    langkah = `${val1} - ${val2} = ${hasil}`;
+                    break;
+                case 'kali':
+                    hasil = val1 * val2;
+                    langkah = `${val1} × ${val2} = ${hasil}`;
+                    break;
+                case 'bagi':
+                    if (val2 === 0) {
+                        hasilTeks.innerText = "Tidak Terdefinisi";
+                        langkahTeks.innerText = "Pembagian dengan nilai 0 (nol) tidak diperbolehkan secara matematis.";
+                        return;
+                    }
+                    hasil = val1 / val2;
+                    langkah = `${val1} ÷ ${val2} = ${hasil}`;
+                    break;
+                case 'pangkat':
+                    hasil = Math.pow(val1, val2);
+                    langkah = `${val1} dipangkatkan ${val2} (${val1}^${val2}) = ${hasil}`;
+                    break;
+                case 'persen':
+                    hasil = (val1 / 100) * val2;
+                    langkah = `${val1}% dari ${val2} = (${val1} / 100) × ${val2} = ${hasil}`;
+                    break;
+            }
+
+            hasilTeks.innerText = hasil.toLocaleString('id-ID');
+            langkahTeks.innerText = `Detail Rumus: ${langkah}`;
+        }
+
+        function resetForm() {
+            document.getElementById('calcForm').reset();
+            document.getElementById('hasilTeks').innerText = 'Silakan masukkan angka untuk memulai';
+            document.getElementById('langkahTeks').innerText = 'Langkah-langkah perhitungan akan ditampilkan di bagian ini.';
+            updateLabel();
+        }
+    </script>
+</body>
+</html>
